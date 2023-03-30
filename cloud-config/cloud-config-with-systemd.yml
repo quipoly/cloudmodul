@@ -4,12 +4,13 @@ users:
   - name: yannic
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - ssh-rsa 
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC6Zh3s6FWjvspjmN+Lxu+txeoVsE9/uDkDGNBmha9OW9zvRkc7YWTKKWovKUS1YIhJpejVXxKa2XdAllUExU3DccF/npdg8S55Tka6OV54Ib2gF7WfdW32KcBAIlUJ28sBQ/hUAyBM5EtJFz1a1/khY9zO8vxrauODMEw5HjGraM1H4daLF1bMnhyKVTxFpBQ1yu5JtWqCM6KoTS2ujl7nrJUH2b1PibQ2KYhodCqljvBLthsuPbgFGexpdwB8DXkXLM9+x30N5oMHUnVstnQM6Ce8Da+Uj9j2NacccDUSmtNjgmnmhOZPqyYMsa9/tDelRlqh74nXNN8b0nS074adU4Zw0vLaST3iicVZCtTuzCPeigPrm4ZCsvswxK61tH95Scq+11Umbjnt6ylBgfmXWZSIFVE4WezrjukMp/WvAFNvcWyfoqem9G9vtxwDpMbbmskjsoAudKkEG3OzQ4oT36/oGmO9JLFeIqgLEdWc3JKCw1kdE4brCkeWb1asd48= delta@Laptop-Yannic
+
 packages:
   - curl
   - sudo
   - docker.io
-runcmd: #node exporter
+runcmd: #node exporter / Prometheus / Grafana
   - cd /tmp && curl -OL https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
   - cd /tmp && tar -xvf /tmp/node_exporter-1.2.2.linux-amd64.tar.gz
   - sudo useradd -m node_exporter
@@ -17,22 +18,18 @@ runcmd: #node exporter
   - sudo usermod -a -G node_exporter node_exporter
   - sudo mv /tmp/node_exporter-1.2.2.linux-amd64/node_exporter /usr/local/bin/
   - sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
-
-
-
-
-
-runcmd: #prometheus
+  - wget https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service -P /etc/systemd/system/
+  - sudo systemctl daemon-reload
+  - sudo systemctl start node_exporter
+  - sudo useradd -M -U prometheus
   - wget "https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz"
   - tar -xzvf prometheus-2.40.0-rc.0.linux-amd64.tar.gz
-  - sudo mv prometheus-2.40.0-rc.0.linux-amd64 /opt/prometheus
-  - sudo chown prometheus:prometheus -R /opt/prometheus
-  - wget "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.service" -P /etc/systemd/system/
-  - wget "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.yml" -P /opt/prometheus/
+  - sudo mv prometheus-2.40.0-rc.0.linux-amd64 /opt/prometheus/prometheus
+  - sudo chown prometheus:prometheus -R /opt/prometheus/prometheus
+  - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.service" -P /etc/systemd/system/
+  - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" -P /opt/prometheus/
   - sudo systemctl daemon-reload
   - sudo systemctl start prometheus.service
-
-runcmd: #grafana
   - sudo apt-get install -y adduser libfontconfig1
   - wget https://dl.grafana.com/enterprise/release/grafana-enterprise_9.4.7_amd64.deb
   - sudo dpkg -i grafana-enterprise_9.4.7_amd64.deb
