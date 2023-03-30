@@ -9,7 +9,7 @@ packages:
   - curl
   - sudo
   - docker.io
-runcmd:
+runcmd: #node exporter
   - cd /home/yannic
   - wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
   - tar xvfz node_exporter-*.*-amd64.tar.gz
@@ -17,8 +17,16 @@ runcmd:
   - ./node_exporter &
   - touch test_node_exporter.txt
   - curl http://localhost:9100/metrics > log-prometheus.log
-  - docker pull prom/prometheus
-  - docker pull grafana/grafana
-  - wget "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.yml" 
-  - docker run -d -p 9090:9090 -v /home/yannic/prometheus.yml:/etc/prometheus/ -v prom:/etc/prometheus/ --name prometheus-yannnnnnic prom/prometheus
-  - sudo docker run -d -p 3000:3000 --name grafana -v grafana:/etc/grafana/ grafana/grafana
+
+
+runcmd: #prometheus
+  - wget "https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz"
+  - tar -xzvf prometheus-2.40.0-rc.0.linux-amd64.tar.gz
+  - sudo mv prometheus-2.40.0-rc.0.linux-amd64 /opt/prometheus
+  - sudo chown prometheus:prometheus -R /opt/prometheus
+  - wget 
+  - sudo systemctl daemon-reload
+  - sudo systemctl start prometheus.service
+
+
+  - wget "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.yml" -P /etc/prometheus/prometheus
