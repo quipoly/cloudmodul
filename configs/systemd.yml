@@ -11,11 +11,12 @@ packages:
   - docker.io
 
 runcmd:
+  - cd /home/yannic
   - sudo useradd -m node_exporter
   - sudo groupadd node_exporter
+  - sudo usermod -a -G node_exporter node_exporter
   - cd /tmp && curl -OL https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
   - cd /tmp && tar -xvf /tmp/node_exporter-1.2.2.linux-amd64.tar.gz
-  - sudo usermod -a -G node_exporter node_exporter
   - sudo mv /tmp/node_exporter-1.2.2.linux-amd64/node_exporter /usr/local/bin/
   - sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
   - wget https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service -P /etc/systemd/system/
@@ -23,9 +24,13 @@ runcmd:
   - sudo systemctl start node_exporter
   - docker pull prom/prometheus
   - docker pull grafana/grafana
-  - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" 
+  - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" -P /home/yannic 
   - mkdidr /etc/yannic/
   - wget https://raw.githubusercontent.com/quipoly/cloudmodul/main/script/startup.sh -P /etc/yannic/
+  - sudo chmod +x /etc/yannic/
+  - sudo chown yannic /etc/yannic/startup.sh
+  - sudo chmod 777 /etc/yannic/startup.sh
   - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/yannic.service" -P /etc/systemd/system/
   - sudo systemctl daemon-reload
   - sudo systemctl start yannic
+  - sudo systemctl enable yannic
