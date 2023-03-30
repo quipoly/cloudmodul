@@ -1,0 +1,31 @@
+#cloud-config
+users:
+  - default
+  - name: yannic
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa 
+
+  # Add the following users:
+  - name: node_exporter
+  - name: prometheus
+
+packages:
+  - curl
+  - sudo
+  - docker.io
+
+runcmd:
+  - cd /tmp && curl -OL https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+  - cd /tmp && tar -xvf /tmp/node_exporter-1.2.2.linux-amd64.tar.gz
+  - sudo usermod -a -G node_exporter node_exporter
+  - sudo mv /tmp/node_exporter-1.2.2.linux-amd64/node_exporter /usr/local/bin/
+  - sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+  - wget https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service -P /etc/systemd/system/
+  - sudo systemctl daemon-reload
+  - sudo systemctl start node_exporter
+  - docker pull prom/prometheus
+  - docker pull grafana/grafana
+  - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" 
+  - mkdidr /etc/yannic/
+  - wget "https://github.com/quipoly/cloudmodul/raw/main/script/startup.sh" 

@@ -1,0 +1,12 @@
+[Unit]
+Description=Start Grafana and Prometheus from docker
+After=network.target
+
+[Service]
+Type=simple
+User=yannic
+WorkingDirectory=/etc/yannic/
+ExecStart=/etc/yannic/startup.sh
+
+[Install]
+WantedBy=multi-user.target
