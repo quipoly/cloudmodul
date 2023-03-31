@@ -24,7 +24,7 @@ runcmd:
   - docker pull grafana/grafana
   - wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" -P /home/yannic 
   - mkdidr /etc/yannic/
-  - wget https://raw.githubusercontent.com/quipoly/cloudmodul/main/script/startup.sh -P /etc/yannic/
+  - wget https://raw.githubusercontent.com/quipoly/cloudmodul/main/startup.sh -P /etc/yannic/
   - sudo chmod +x /etc/yannic/startup.sh
   - sudo chown yannic /etc/yannic/startup.sh
   - sudo chmod 777 /etc/yannic/startup.sh
