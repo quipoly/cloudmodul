@@ -4,8 +4,7 @@ users:
   - name: yannic
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC6Zh3s6FWjvspjmN+Lxu+txeoVsE9/uDkDGNBmha9OW9zvRkc7YWTKKWovKUS1YIhJpejVXxKa2XdAllUExU3DccF/npdg8S55Tka6OV54Ib2gF7WfdW32KcBAIlUJ28sBQ/hUAyBM5EtJFz1a1/khY9zO8vxrauODMEw5HjGraM1H4daLF1bMnhyKVTxFpBQ1yu5JtWqCM6KoTS2ujl7nrJUH2b1PibQ2KYhodCqljvBLthsuPbgFGexpdwB8DXkXLM9+x30N5oMHUnVstnQM6Ce8Da+Uj9j2NacccDUSmtNjgmnmhOZPqyYMsa9/tDelRlqh74nXNN8b0nS074adU4Zw0vLaST3iicVZCtTuzCPeigPrm4ZCsvswxK61tH95Scq+11Umbjnt6ylBgfmXWZSIFVE4WezrjukMp/WvAFNvcWyfoqem9G9vtxwDpMbbmskjsoAudKkEG3OzQ4oT36/oGmO9JLFeIqgLEdWc3JKCw1kdE4brCkeWb1asd48= delta@Laptop-Yannic
-
+      - ssh-rsa 
 packages:
   - curl
   - sudo

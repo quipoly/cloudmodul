@@ -1,0 +1,137 @@
+---
+- name: Install and configure Prometheus, Grafana and Node Exporter
+  hosts: all
+  become: true
+  tasks:
+  - name: Create user account yannic
+    user:
+      name: yannic
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+  - name: Install packages
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - curl
+      - sudo
+      - docker.io
+  - name: Download and install Node Exporter
+    become_user: root
+    get_url:
+      url: "https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz"
+      dest: /tmp/node_exporter-1.2.2.linux-amd64.tar.gz
+    register: node_exporter_download
+  - name: Extract Node Exporter archive
+    become_user: root
+    command: tar -xvf /tmp/node_exporter-1.2.2.linux-amd64.tar.gz -C /tmp/
+    when: node_exporter_download.changed
+  - name: Create node_exporter user and group
+    become_user: root
+    user:
+      name: node_exporter
+      system: yes
+      createhome: yes
+    group:
+      name: node_exporter
+      state: present
+  - name: Move Node Exporter binary to /usr/local/bin/
+    become_user: root
+    command: mv /tmp/node_exporter-1.2.2.linux-amd64/node_exporter /usr/local/bin/
+    when: node_exporter_download.changed
+  - name: Set ownership of Node Exporter binary
+    become_user: root
+    file:
+      path: /usr/local/bin/node_exporter
+      owner: node_exporter
+      group: node_exporter
+  - name: Copy systemd service file for Node Exporter
+    ansible.builtin.get_url :
+      url: https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service
+      dest: /etc/systemd/system/node_exporter.service
+      mode: '0644'
+  - name: Reload systemd manager configuration
+    become_user: root
+    systemd:
+      daemon_reload: yes
+  - name: Start Node Exporter
+    become_user: root
+    service:
+      name: node_exporter
+      state: started
+      enabled: yes
+  - name: Create prometheus user and group
+    become_user: root
+    user:
+      name: prometheus
+      system: yes
+      createhome: yes
+    group:
+      name: prometheus
+      state: present
+  - name: Download and install Prometheus
+    become_user: root
+    get_url:
+      url: "https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz"
+      dest: /tmp/prometheus-2.43.0.linux-amd64.tar.gz
+    register: prometheus_download
+  - name: Extract Prometheus archive
+    become_user: root
+    command: tar -xzf /tmp/prometheus-2.43.0.linux-amd64.tar.gz -C /opt/prometheus/
+    when: prometheus_download.changed
+  - name: Set ownership of Prometheus installation directory
+    become_user: root
+    file:
+      path: /opt/prometheus
+      owner: prometheus
+      group: prometheus
+      state: directory
+  - name: Copy systemd service file
+    ansible.builtin.get_url:
+      url: "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.service"
+      dest: /etc/systemd/system/node_exporter.service
+      mode: '0644'
+  
+  tasks:
+    - name: Download Prometheus config file
+      get_url:
+        url: "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml"
+        dest: "/opt/prometheus/prometheus.yml"
+
+    - name: Reload systemd manager configuration
+      systemd:
+        daemon_reload: yes
+
+    - name: Start Prometheus service
+      systemd:
+        name: prometheus.service
+        state: started
+        enabled: yes
+
+    - name: Install dependencies for Grafana
+      apt:
+        name:
+          - adduser
+          - libfontconfig1
+        state: present
+
+    - name: Download Grafana package
+      get_url:
+        url: "https://dl.grafana.com/enterprise/release/grafana-enterprise_9.4.7_amd64.deb"
+        dest: "/tmp/grafana-enterprise_9.4.7_amd64.deb"
+
+    - name: Install Grafana
+      apt:
+        deb: "/tmp/grafana-enterprise_9.4.7_amd64.deb"
+        state: present
+
+    - name: Reload systemd manager configuration
+      systemd:
+        daemon_reload: yes
+
+    - name: Start Grafana service
+      systemd:
+        name: grafana-server
+        state: started
+        enabled: yes
