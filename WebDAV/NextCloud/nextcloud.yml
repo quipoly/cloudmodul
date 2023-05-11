@@ -1,0 +1,31 @@
+#cloud-config
+users:
+  - default
+  - name: nextcloud
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC6Zh3s6FWjvspjmN+Lxu+txeoVsE9/uDkDGNBmha9OW9zvRkc7YWTKKWovKUS1YIhJpejVXxKa2XdAllUExU3DccF/npdg8S55Tka6OV54Ib2gF7WfdW32KcBAIlUJ28sBQ/hUAyBM5EtJFz1a1/khY9zO8vxrauODMEw5HjGraM1H4daLF1bMnhyKVTxFpBQ1yu5JtWqCM6KoTS2ujl7nrJUH2b1PibQ2KYhodCqljvBLthsuPbgFGexpdwB8DXkXLM9+x30N5oMHUnVstnQM6Ce8Da+Uj9j2NacccDUSmtNjgmnmhOZPqyYMsa9/tDelRlqh74nXNN8b0nS074adU4Zw0vLaST3iicVZCtTuzCPeigPrm4ZCsvswxK61tH95Scq+11Umbjnt6ylBgfmXWZSIFVE4WezrjukMp/WvAFNvcWyfoqem9G9vtxwDpMbbmskjsoAudKkEG3OzQ4oT36/oGmO9JLFeIqgLEdWc3JKCw1kdE4brCkeWb1asd48= delta@Laptop-Yannic
+
+  packages:
+  - apache2
+  - mariadb-server
+  - libapache2-mod-php
+  - php
+  - php-gd
+  - php-mysql
+  - php-curl
+  - php-mbstring
+  - php-intl
+  - php-imagick
+  - php-xml
+  - php-zip
+  - wget
+
+runcmd:
+  - apt-get update
+  - apt-get -y upgrade
+  - apt-get -y install gnupg
+  - wget -qO - https://download.nextcloud.com/server/releases/latest-21.asc | apt-key add -
+  - echo 'deb https://download.nextcloud.com/server/releases/latest-21/Ubuntu_20.04/ /' > /etc/apt/sources.list.d/nextcloud.list
+  - apt-get update
+  - apt-get -y install nextcloud
