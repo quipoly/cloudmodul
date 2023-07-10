@@ -1,0 +1,8 @@
+docker run -d --name gl-runner -v /var/run/docker.sock:/var/run/docker.sock \
+  gitlab/gitlab-runner
+
+docker exec gl-runner gitlab-runner register --url https://gitlab.com \
+  --token glrt-QivT-z9fYA6DSt1J2BRy --executor docker \
+  --docker-image docker:23.0.4 --docker-privileged --non-interactive
+
+docker restart gl-runner
