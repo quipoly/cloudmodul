@@ -1,0 +1,20 @@
+---
+- name: Update webserver
+
+  tasks:
+  - name: Latest version of nginx
+    ansible.builtin.apt:
+      name: nginx
+      state: latest
+  - name: get index from git
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/quipoly/cloudmodul/main/terraform/cloud-init.yml
+      dest: /var/www/html/index.html
+      mode: '0644'
+    become: yes  # This will attempt to execute the task with sudo privileges.
+
+  # - name: Write the index.html
+  #   ansible.builtin.copy:
+  #     src: index.html
+  #     dest: /var/www/index.html
+  #     mode: '0644'
