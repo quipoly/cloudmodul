@@ -9,8 +9,7 @@ users:
 packages:
   - nginx
 
-write_files:
-  - path: /etc/www/index.html
-
 runcmd: 
-  - 
+  - curl -o /var/www/html/index.html https://raw.githubusercontent.com/quipoly/cloudmodul/main/terraform/index.html
+  - chmod 0644 /var/www/html/index.html
+  - chown www-data:www-data /var/www/html/index.html
