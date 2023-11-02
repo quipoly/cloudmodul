@@ -1,5 +1,7 @@
 ---
 - name: Update webserver
+  hosts: web
+  remote_user: ansible
 
   tasks:
   - name: Latest version of nginx
