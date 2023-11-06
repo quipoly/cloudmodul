@@ -1,0 +1,7 @@
+---
+- name: Test WordPress Role
+  hosts: wordpress
+  become: true
+
+  roles:
+    - ./wordpress

@@ -1,2 +1,81 @@
 ---
-# tasks file for ./wordpress
+- name: Update system
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+
+- name: Install apache2
+  apt:
+    name: apache2
+    state: present
+
+- name: install php packages + git
+  apt:
+    name: 
+      - php
+      - git
+      - php-curl
+      - php-gd
+      - php-mbstring
+      - php-xml
+      - php-xmlrpc
+      - php-soap
+      - php-intl
+      - php-zip
+      - libapache2-mod-php
+      - php-pgsql
+      - php-mysqlnd
+      - php-cli
+      - unzip
+    state: present
+
+- name: Install the latest version of WordPress
+  ansible.builtin.get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /tmp/latest.zip
+    mode: '0644'
+
+- name: Ensure the web root directory exists
+  ansible.builtin.file:
+    path: /var/www/html/
+    state: directory
+    owner: www-data  # Use the appropriate owner for your web server
+    group: www-data  # Use the appropriate group for your web server
+    mode: '0755'
+
+- name: Unzip latest.zip from WordPress
+  ansible.builtin.unarchive:
+    src: /tmp/latest.zip
+    dest: /var/www/html/
+    remote_src: true
+
+- name: Clone PostgreSQL for WordPress from GitHub
+  ansible.builtin.git:
+    repo: https://github.com/kevinoid/postgresql-for-wordpress.git
+    dest: /var/www/html/wordpress/wp-content/postgresql-for-wordpress
+    clone: true
+    update: true
+
+- name: Copy the pg4wp directory with owner and permissions
+  ansible.builtin.copy:
+    src: /var/www/html/wordpress/wp-content/postgresql-for-wordpress/pg4wp
+    dest: /var/www/html/wordpress/wp-content/pg4wp
+    owner: www-data
+    group: www-data
+    mode: '0644'
+    remote_src: true
+
+- name: Copy db.php from pg4wp to wp-content
+  ansible.builtin.copy:
+    src: /var/www/html/wordpress/wp-content/pg4wp/pg4wp/db.php
+    dest: /var/www/html/wordpress/wp-content/db.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+    remote_src: true
+
+- name: Start apache2
+  ansible.builtin.service:
+    name: apache2
+    state: started
