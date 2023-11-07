@@ -1,2 +1,28 @@
 ---
 # tasks file for ./nginx-proxy
+- name: Update system
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+- name: install nginx 
+  apt:
+    name: nginx
+    state: present
+
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: allow
+
+- name: Remove file (delete file)
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: create config file for load balancer
+  ansible.builtin.copy:
+    src: ./files/nginx-load.conf
+    dest: /etc/nginx/conf.d/load-balancing.conf
+    mode: "0644"
+    become: true

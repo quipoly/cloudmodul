@@ -5,3 +5,14 @@
 
   roles:
     - ./wordpress
+
+
+- name: Install PostgresSql
+  hosts: postgress-server
+  become: true
+
+  roles:
+    - ./postgress
+
+- name: install nginx + configure
+  hosts: nginx-reverse-proxy

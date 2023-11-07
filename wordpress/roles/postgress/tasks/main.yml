@@ -1,2 +1,38 @@
 ---
 # tasks file for ./postgress
+- name: Update system
+  apt:
+    upgrade: true
+    update_cache: true
+    cache_valid_time: 86400 # One day
+
+- name: install PostgreSQL
+  apt:
+    name: 
+      - postgresql
+      - postgresql-contrib
+    state: present
+- name: start service
+  ansible.builtin.service:
+    name: postgresql.service
+    state: started
+- name: Ensure a database is present
+  become: yes  # Equivalent to running sudo
+  become_user: postgres  # Equivalent to su - postgres
+  postgresql_db:
+    name: testdb
+    port: 5444
+    encoding: 'UTF-8'  # Optional: specify the encoding
+    lc_collate: 'en_US.UTF-8'  # Optional: specify the collation
+    lc_ctype: 'en_US.UTF-8'  # Optional: specify the character type
+    template: template0  # Optional: specify the template
+
+- name: Ensure a user is present
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    db: testdb
+    name: testuser
+    password: testpassword
+    port: 5444
+    priv: "ALL"
