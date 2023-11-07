@@ -1,3 +1,6 @@
 {
-    "ansible.python.interpreterPath": "c:\\Python311\\python.exe"
+    "ansible.python.interpreterPath": "c:\\Python311\\python.exe",
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/tasks": "file:///home/erzinger/git/cloudmodul/wordpress/roles/wordpress/tasks/main.yml"
+    }
 }

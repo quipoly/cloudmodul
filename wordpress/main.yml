@@ -7,12 +7,15 @@
     - ./wordpress
 
 
-- name: Install PostgresSql
-  hosts: postgress-server
-  become: true
+# - name: Install PostgresSql
+#   hosts: postgress-server
+#   become: true
 
-  roles:
-    - ./postgress
+#   roles:
+#     - ./postgress
 
-- name: install nginx + configure
-  hosts: nginx-reverse-proxy
+# - name: install nginx + configure
+#   hosts: nginx-reverse-proxy
+#   become: true
+
+#   roles: ./nginx-proxy

@@ -22,6 +22,8 @@
       - unzip
     state: present
 
+
+
 # Apache Configuration
 - name: Create document root
   file:
@@ -36,11 +38,9 @@
 - name: Download and unpack latest WordPress
   unarchive:
     src: https://wordpress.org/latest.tar.gz
-    dest: "/var/www/html/"
+    dest: "/var/www/html/wordpress"
     remote_src: yes
     creates: "/var/www/html/wordpress"
-
-   
 
 - name: Set ownership
   file:
@@ -51,29 +51,6 @@
     group: www-data
   tags: [ wordpress ]
 
-- name: download git for postgres
-  ansible.builtin.git:
-    repo: https://github.com/kevinoid/postgresql-for-wordpress.git
-    dest: /var/www/html/wordpress/wp-content/postgresql-for-wordpress/
-    clone: true
-
-- name: Copy pg4wp directory to wp-content
-  ansible.builtin.command:
-    cmd: cp -a /var/www/html/wordpress/wp-content/postgresql-for-wordpress/pg4wp /var/www/html/wordpress/wp-content/pg4wp
-  args:
-    creates: /var/www/html/wordpress/wp-content/pg4wp
-  become: true
-  become_user: root
-
-- name: copy db.php to wp-content
-  ansible.builtin.command:
-    cmd: cp -a /var/www/html/wordpress/wp-content/pg4wp/db.php /var/www/html/wordpress/wp-content/db.php
-  args:
-    creates: /var/www/html/wordpress/wp-content/db.php
-  become: true
-  become_user: root
-       
-    
 - name: Set permissions for directories
   shell: "/usr/bin/find /var/www/html/wordpress/ -type d -exec chmod 750 {} \\;"
   tags: [ wordpress ]
@@ -81,29 +58,6 @@
 - name: Set permissions for files
   shell: "/usr/bin/find /var/www/html/wordpress/ -type f -exec chmod 640 {} \\;"
   tags: [ wordpress ]
-
-- name: Set ownership for WordPress
-  file:
-    path: /var/www/html/wordpress
-    state: directory
-    owner: www-data
-    group: www-data
-  tags: [ wordpress ]
-
-- name: Set directory permissions for WordPress
-  file:
-    path: /var/www/html/wordpress
-    state: directory
-    mode: '0755'
-    recurse: yes
-  tags: [ wordpress ]
-
-- name: Set file permissions for WordPress
-  find:
-    paths: /var/www/html/wordpress
-    recurse: yes
-    file_type: file
-  register: wp_files
 
 
 

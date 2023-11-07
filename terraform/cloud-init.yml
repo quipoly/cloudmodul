@@ -6,10 +6,3 @@ users:
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDeUxYgpiT5NekSIqljN1fGtOulFRSa+jffpdzRlaSK7mkCbsywy21ax0G/VIRacFP5YxyCijDT5+vq7ASHREN0RUuHuLxIZ81shlcXTpRXwVPMZOWwBaYjMp52lxvyCY3IxxIEV5w2XFNPr27fK0jbI6G2iKCVXniM8MF3CTnnUfl7vGPAhzHbzcYxyRQS5jYCQkqUZpVfrBTwHv4mbT8icWK+Qh+A5Vn4CEpvOmuxxERMv31MP7pJujYT+UXhGs0KYJAn2reH6xbR6aPJdB7f9uXzUc//563SC56cYzUIUeF93uMXYL7qhrGwIRbee274iVoEeWz+Qp9igS6+nK1u8CGztwXrVx9kLorUrtTuamUx28cWeJaHTC5RVyiDjFuzYeVSfFBMpcCJYO0Zin0o1JNOcPtxmeRajP4VcjaPuctHBJulaOtsBWEP9o6qmz+CseT5UPJod532yQJ/70ERTyR5mLROMs8HZCWwcfYAig1n9IW2JmkFSDT3j/Guslc= delta@Laptop_Yannic
 
-packages:
-  - nginx
-
-runcmd: 
-  - curl -o /var/www/html/index.html https://raw.githubusercontent.com/quipoly/cloudmodul/main/terraform/index.html
-  - chmod 0644 /var/www/html/index.html
-  - chown www-data:www-data /var/www/html/index.html
