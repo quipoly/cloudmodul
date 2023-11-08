@@ -1,18 +1,18 @@
 ---
-- name: Test WordPress Role
-  hosts: wordpress
-  become: true
-
-  roles:
-    - ./wordpress
-
-
-# - name: Install PostgresSql
-#   hosts: postgress-server
+# - name: Test WordPress Role
+#   hosts: wordpress
 #   become: true
 
 #   roles:
-#     - ./postgress
+#     - ./wordpress
+
+
+- name: Install MySQL
+  hosts: mysql
+  become: true
+
+  roles:
+    - ./mysql
 
 # - name: install nginx + configure
 #   hosts: nginx-reverse-proxy

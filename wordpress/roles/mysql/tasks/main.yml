@@ -1,0 +1,84 @@
+---
+# tasks file for setting up a MySQL server
+
+- name: Update system
+  apt:
+    upgrade: 'yes'
+    update_cache: 'yes'
+    cache_valid_time: 86400 # One day
+
+- name: Install MySQL Server
+  apt:
+    name: mysql-server
+    update_cache: 'yes'
+    state: present
+
+- name: Start MySQL service and enable on startup
+  service:
+    name: mysql
+    state: started
+    enabled: 'yes'
+
+- name: Update MySQL root password for all root accounts
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "new_root_password"
+    login_user: root
+    login_password: "current_root_password"
+    check_implicit_admin: 'yes'
+    priv: "*.*:ALL,GRANT"
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Remove anonymous user accounts
+  mysql_user:
+    name: ''
+    host: "{{ item }}"
+    state: absent
+    login_user: root
+    login_password: "new_root_password"
+  with_items:
+    - localhost
+
+- name: Remove the test database
+  mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "new_root_password"
+
+- name: Create a new database
+  mysql_db:
+    name: testdb
+    state: present
+    login_user: root
+    login_password: "new_root_password"
+
+# Add a user that can connect to 'testdb'
+- name: Create MySQL user for testdb and grant all privileges
+  mysql_user:
+    name: testuser
+    password: "testpassword"
+    priv: "testdb.*:ALL"
+    state: present
+    login_user: root
+    login_password: "new_root_password"
+    host: '%'
+    append_privs: 'yes'
+
+- name: Set MySQL bind address to '*'
+  lineinfile:
+    path: /etc/mysql/my.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = *'
+    state: present
+  notify: restart mysql
+
+
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted

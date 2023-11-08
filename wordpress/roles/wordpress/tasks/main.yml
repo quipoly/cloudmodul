@@ -50,28 +50,6 @@
     owner: www-data
     group: www-data
   tags: [ wordpress ]
-
-- name: download git for postgres
-  ansible.builtin.git:
-    repo: https://github.com/kevinoid/postgresql-for-wordpress.git
-    dest: /var/www/html/wordpress/wp-content/postgresql-for-wordpress/
-    clone: true
-
-- name: Copy pg4wp directory to wp-content
-  ansible.builtin.command:
-    cmd: cp -a /var/www/html/wordpress/wp-content/postgresql-for-wordpress/pg4wp /var/www/html/wordpress/wp-content/pg4wp
-  args:
-    creates: /var/www/html/wordpress/wp-content/pg4wp
-  become: true
-  become_user: root
-
-- name: copy db.php to wp-content
-  ansible.builtin.command:
-    cmd: cp -a /var/www/html/wordpress/wp-content/pg4wp/db.php /var/www/html/wordpress/wp-content/db.php
-  args:
-    creates: /var/www/html/wordpress/wp-content/db.php
-  become: true
-  become_user: root
        
     
 - name: Set permissions for directories
