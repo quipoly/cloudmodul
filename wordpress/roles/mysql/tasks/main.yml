@@ -9,9 +9,24 @@
 
 - name: Install MySQL Server
   apt:
-    name: mysql-server
+    name: 
+      - mysql-server
+      - python3
+      - pip
     update_cache: 'yes'
     state: present
+- name: Install PyMySQL
+  pip:
+    name: PyMySQL
+    state: present
+
+- name: copy conf file for mysql  
+  ansible.builtin.copy:
+    src: ./files/.my.cnf
+    dest: /root/.my.cnf
+    mode: "0644"
+    become: true
+
 
 - name: Start MySQL service and enable on startup
   service:
@@ -19,63 +34,26 @@
     state: started
     enabled: 'yes'
 
-- name: Update MySQL root password for all root accounts
-  mysql_user:
-    name: root
-    host: "{{ item }}"
-    password: "new_root_password"
-    login_user: root
-    login_password: "current_root_password"
-    check_implicit_admin: 'yes'
-    priv: "*.*:ALL,GRANT"
-  with_items:
-    - 127.0.0.1
-    - ::1
-    - localhost
-
-- name: Remove anonymous user accounts
-  mysql_user:
-    name: ''
-    host: "{{ item }}"
-    state: absent
-    login_user: root
-    login_password: "new_root_password"
-  with_items:
-    - localhost
-
-- name: Remove the test database
-  mysql_db:
-    name: test
-    state: absent
-    login_user: root
-    login_password: "new_root_password"
+#add the ufw rules for ssh and mysql
+#set bind address for the network card
 
 - name: Create a new database
   mysql_db:
-    name: testdb
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: wow
     state: present
-    login_user: root
-    login_password: "new_root_password"
 
-# Add a user that can connect to 'testdb'
+
 - name: Create MySQL user for testdb and grant all privileges
   mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
     name: testuser
     password: "testpassword"
-    priv: "testdb.*:ALL"
+    priv: "*.*:ALL"
     state: present
-    login_user: root
-    login_password: "new_root_password"
     host: '%'
     append_privs: 'yes'
 
-- name: Set MySQL bind address to '*'
-  lineinfile:
-    path: /etc/mysql/my.cnf
-    regexp: '^bind-address'
-    line: 'bind-address = *'
-    state: present
-  notify: restart mysql
 
 
 - name: restart mysql

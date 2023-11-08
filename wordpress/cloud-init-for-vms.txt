@@ -5,3 +5,8 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCg1ggr2U9mlER30iqyCcS/OP4qRXEbtYfpFvmNstvFaM8Vaco38p5OYWzQ+KRbwDoacL7PQIgM6wA2S9T/CTEXgPHbOavnRgk3Aa0PA4ubk9goTg9Evl6PUm1cWuCHSQPUBoj65lUsBRkM7AF5X8skX6vPGVEK+PEy0yB8seB65IN1pzY+Lyt6mpQtIFl5tuGB6kozdzZtOyT3EEmTn4pqoG1+kB6gksEwf0jyd6TrM/6TEPtATPSSCd5vdNt078FLitIUEj5cxkwBBQgqER/4D1ykCxYeqQDm8HztbIGEQVw0E3MpDefQaKWc+cF9IA6SW0nXgYY1Vv+r37OcvpaSwQ/VdwE73xqFILlI3xdMhBOVDmPDsneyagWxUtswae/qC74+tf1+l5PmBqCs38OyErs1RfrKc+uYoZf//jXTfrBvTxqT9lGv1uYhjJhH3ITURSP18b9Z1xkAJXmMY0xJAxqltaCBmaX6VT9wWvQaqcTjSgibHJ4dL5U3ImJ0Qg0= erzinger@Desktop-Yannic
+
+
+      [client]
+user=root
+password=Yannic_0456
