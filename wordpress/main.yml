@@ -1,10 +1,10 @@
 ---
-# - name: Test WordPress Role
-#   hosts: wordpress
-#   become: true
+- name: Test WordPress Role
+  hosts: wordpress
+  become: true
 
-#   roles:
-#     - ./wordpress
+  roles:
+    - ./wordpress
 
 
 - name: Install MySQL
@@ -14,8 +14,10 @@
   roles:
     - ./mysql
 
-# - name: install nginx + configure
-#   hosts: nginx-reverse-proxy
-#   become: true
 
-#   roles: ./nginx-proxy
+- name: sprengig
+  hosts: nginx-reverse-proxy
+  become: true
+
+  roles:
+    - ./nginx-proxy

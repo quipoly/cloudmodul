@@ -20,9 +20,10 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
 
+
 - name: create config file for load balancer
   ansible.builtin.copy:
-    src: ./files/nginx-load.conf
-    dest: /etc/nginx/conf.d/load-balancing.conf
+    src: ./files/default
+    dest: /etc/nginx/sites-available/
     mode: "0644"
-    become: true
+  become: true

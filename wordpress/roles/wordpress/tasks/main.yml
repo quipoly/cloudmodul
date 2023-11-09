@@ -2,11 +2,10 @@
   apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
   tags: [ system ]
 
-- name: install php packages + git
+- name: install php packages
   apt:
     name: 
       - php
-      - git
       - php-curl
       - php-gd
       - php-mbstring
@@ -21,30 +20,44 @@
       - php-cli
       - unzip
     state: present
+- name: Download foo.conf
+  ansible.builtin.get_url:
+    url: https://wordpress.org/latest.tar.gz
+    dest: /tmp/latest.tar.gz
+    mode: '0440'
 
 # Apache Configuration
 - name: Create document root
   file:
-    path: "/var/www/html"
+    path: "/var/www/html/wordpress"
     state: directory
     owner: "www-data"
     group: "www-data"
     mode: '0755'
   tags: [ apache ]
 
+- name: Remove index.html (standard file) 
+  ansible.builtin.file:
+    path: /var/www/html/index.html
+    state: absent
 # WordPress Configuration
-- name: Download and unpack latest WordPress
+- name: unpack wordpress
   unarchive:
-    src: https://wordpress.org/latest.tar.gz
-    dest: "/var/www/html/"
+    src: /tmp/latest.tar.gz
+    dest: /var/www/html/
+    mode: 0777
     remote_src: yes
-    creates: "/var/www/html/wordpress"
 
-   
+- name: copy conf file for mysql to yannic
+  ansible.builtin.copy:
+    src: ./files/wp-config.php
+    dest: /var/www/html/wordpress/wp-config.php
+    mode: "0644"
+  become: true
 
 - name: Set ownership
   file:
-    path: "/var/www/html"
+    path: /var/www/html/
     state: directory
     recurse: yes
     owner: www-data
@@ -53,16 +66,16 @@
        
     
 - name: Set permissions for directories
-  shell: "/usr/bin/find /var/www/html/wordpress/ -type d -exec chmod 750 {} \\;"
+  shell: "/usr/bin/find /var/www/html/wordpress -type d -exec chmod 750 {} \\;"
   tags: [ wordpress ]
 
 - name: Set permissions for files
-  shell: "/usr/bin/find /var/www/html/wordpress/ -type f -exec chmod 640 {} \\;"
+  shell: "/usr/bin/find /var/www/html/wordpress -type f -exec chmod 640 {} \\;"
   tags: [ wordpress ]
 
 - name: Set ownership for WordPress
   file:
-    path: /var/www/html/wordpress
+    path: "/var/www/html/wordpress"
     state: directory
     owner: www-data
     group: www-data

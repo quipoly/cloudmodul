@@ -1,0 +1,12 @@
+#cloud-config
+users:
+  - default
+  - name: yannic
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCOrCkN0Z3/OWo8jzKQvpQaBZQjhnV+7klCQ4EcnGHXnovUl5BEMOcVqQxHGGtg2UIa07BNw8WhLPZerPXx69IL0hR94stZCNCaxNpZWbpMLH7QqZd4ipb9Xdic+T2qrSk47cNEi1BMpMrim6NlZIiqccHxa9kcB/3PxAGGlxAEdr6s8bCdltUa4NxX4iRB5ja27VmJ8AZ9nh3lY1q3ocFVqrQZCpDXwUBhiLGCEPpZR/ZzTQUTuxDu6/MAqRG8IdY0ADPlqV5cSAbFaWC1nimdWp7bCgmd+i9yv5lP+KrfIh05yPochQqb2d0rFb30KYFY5dJDSbkrM+DWY3YC4L5nAPu6m5M3WZB2RlWO5aIOIGJOxfvKX48HJVuVN9YCc8LLIKX2X19k5389+T0SAjYK+QYSsP4tTGFbmKhjeLCDyEnCEXkTCqz2tpo31XKD2g8uAGyHJTk5T92mrNM30kouH0DRm8+sJzNieykzJA+d3CtfRiDjqIGIFWqojl2SsQU= yannic@LaptopYannic
+
+
+      [client]
+user=root
+password=Yannic_0456

@@ -6,6 +6,10 @@
     upgrade: 'yes'
     update_cache: 'yes'
     cache_valid_time: 86400 # One day
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: allow
 
 - name: Install MySQL Server
   apt:
@@ -20,12 +24,22 @@
     name: PyMySQL
     state: present
 
-- name: copy conf file for mysql  
+# - name: copy conf file for mysql to root
+#   ansible.builtin.copy:
+#     src: ./files/mysqld.cnf
+#     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+#     mode: "0644"
+#     force: yes
+#   notify: Restart mysql
+
+- name: copy conf file for mysql to yannic
   ansible.builtin.copy:
-    src: ./files/.my.cnf
-    dest: /root/.my.cnf
+    src: ./files/mysqld.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
     mode: "0644"
-    become: true
+    force: yes
+  notify: Restart mysql
+
 
 
 - name: Start MySQL service and enable on startup
@@ -34,7 +48,6 @@
     state: started
     enabled: 'yes'
 
-#add the ufw rules for ssh and mysql
 #set bind address for the network card
 
 - name: Create a new database

@@ -1,20 +1,19 @@
-http {
+
     upstream wordpress {
-        ip_hash;
-        server 192.168.1.1;
-        server 192.168.1.2;
+        server 192.168.68.117;
+        server 192.168.68.124;
     }
 
     server {
         listen 80;
-        server_name loadbalancing.example.com;
+        server_name 192.168.68.118;
 
         location / {
             proxy_redirect      off;
 	        proxy_set_header    X-Real-IP $remote_addr;
 	        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
 	        proxy_set_header    Host $http_host;
-            proxy_pass http://wordpress;
+            add_header          X-upstream_server $upstream_addr;
+            proxy_pass http://wordpress/;
         }
     }
-}
