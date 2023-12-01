@@ -1,5 +1,5 @@
 #!/bin/bash
-
+terraform output -json > outputs.json
 # Parsing the JSON outputs
 DATABASE_ENDPOINT=$(jq -r '.database_endpoint.value' outputs.json)
 DATABASE_PORT=$(jq -r '.database_port.value' outputs.json)
