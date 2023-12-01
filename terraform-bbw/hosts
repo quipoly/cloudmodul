@@ -1,0 +1,3 @@
+[ec-2]
+jokesHost   ansible_host=35.93.27.253   ansible_user=ubuntu
+jokesHost   ansible_host=35.93.27.253   ansible_user=ubuntu

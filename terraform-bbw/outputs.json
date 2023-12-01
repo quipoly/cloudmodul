@@ -1,0 +1,17 @@
+{
+  "database_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "terraform-20231201143127658300000001.cc4nu9zbw8px.us-west-2.rds.amazonaws.com"
+  },
+  "database_port": {
+    "sensitive": false,
+    "type": "number",
+    "value": 3306
+  },
+  "web_public_ip": {
+    "sensitive": false,
+    "type": "string",
+    "value": "35.93.27.253"
+  }
+}

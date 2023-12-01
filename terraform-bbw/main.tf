@@ -82,7 +82,12 @@ resource "aws_security_group" "ec2" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -113,7 +118,7 @@ resource "aws_security_group" "rds" {
 }
 
 resource "aws_db_subnet_group" "private" {
-  name       = "db_subnet_group"
+  name       = "db_subnet_group_1"
   subnet_ids = [for subnet in aws_subnet.private : subnet.id]
 }
 

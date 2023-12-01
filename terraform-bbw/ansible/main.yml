@@ -1,0 +1,88 @@
+---
+
+- hosts: ec-2
+  gather_facts: true
+  become: true
+  vars:
+    rds_endpoint: "{{ database_endpoint }}"
+    db_user: "admin"
+    db_password: "mypassword"
+    db_name: "mariadb"
+    remote_path_sql: "/home/ubuntu/database.sql"
+    web_public_ip: "{{ web_public_ip }}"
+
+
+
+  tasks:
+    - name: Install prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+      tags: [ system ]
+
+    - name: Install all dependencies required for the EC2
+      ansible.builtin.apt:
+        name:
+          - mariadb-client
+          - git
+          - maven
+        state: present
+
+    - name: Enable UFW
+      ansible.builtin.ufw:
+        state: enabled
+
+    - name: Setup UFW rules
+      ansible.builtin.ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+      loop:
+        - { port: 22, proto: 'tcp' }      # SSH typically uses port 22
+        - { port: 8080, proto: 'tcp' }    # Specify port 8080 directly
+        - { port: 3306, proto: 'tcp' }    # MySQL typically uses port 3306
+
+    - name: Copy relevant SQL scripts to EC2
+      ansible.builtin.copy:
+        src: ./database.sql  # Replace with the path to your SQL script
+        dest: "{{remote_path_sql}}"     # Replace with the destination path on the EC2 instance
+
+    - name: Execute SQL script on RDS
+      ansible.builtin.shell:
+        cmd: "mariadb -h {{ rds_endpoint }} -u {{ db_user }} {{ db_name }} < {{ remote_path_sql }} >> /usr/local/testscript.log"
+      environment:
+        MYSQL_PWD: "{{ db_password }}"
+
+      
+
+
+    - name: git pull the project
+      ansible.builtin.git:
+        repo: https://gitlab.com/bbwrl/m346-ref-card-03.git
+        dest: /home/ubuntu/refcard
+
+
+
+    - name: copy the right applicaiton.properties
+      ansible.builtin.copy:
+        src: ./application.properties
+        dest: /home/ubuntu/refcard/src/main/resources/application.properties
+        force: true
+
+
+    - name: maven build the whole thing 
+      ansible.builtin.command:
+        cmd: mvn package
+        chdir: /home/ubuntu/refcard/
+      become: true
+    
+    - name: Create a systemd service file for the Java application
+      ansible.builtin.template:
+        src: ./jokesdb.service  # Path to a template of your service file
+        dest: /etc/systemd/system/jokesdb.service
+      become: true
+
+    - name: Enable and start the Java application service
+      ansible.builtin.systemd:
+        name: jokesdb
+        enabled: yes
+        state: started
+      become: true

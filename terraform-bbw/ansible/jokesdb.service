@@ -1,0 +1,9 @@
+[Unit]
+Description=My Java Application
+
+[Service]
+ExecStart=/usr/bin/java -DDB_USERNAME="admin" -DDB_PASSWORD="mypassword" -jar /home/ubuntu/refcard/target/architecture-refcard-03-0.0.1-SNAPSHOT.jar
+
+
+[Install]
+WantedBy=multi-user.target
